@@ -9,7 +9,7 @@ PARAM_FILE_NAME = "./param/autoencoder"
 #PARAM_FILE_PATH = "./param/"
 DEFAULT_DATASET_PATH = "/home/nokia/machinelearning/mnist/"
 OUTPUT_IMAGE_PATH = "./image/"
-TRAINING_EPOCH_NUMBER = 500
+TRAINING_EPOCH_NUMBER = 10000
 
 def weight_variable(shape, name):
     return tf.Variable(tf.truncated_normal(shape = shape, stddev = 0.1), name)
@@ -50,7 +50,7 @@ def autoencoder(input_dataset_path, restart_training_flag):
     output_layer = tf.nn.relu(tf.matmul(d_layer2, d_W_3) + d_b_3)
     
     loss = tf.reduce_mean(tf.pow(output_layer - x, 2))
-    optimizer = tf.train.RMSPropOptimizer(0.01).minimize(loss)
+    optimizer = tf.train.RMSPropOptimizer(0.002).minimize(loss)
     init_op = tf.global_variables_initializer()
     
     sess = tf.InteractiveSession()
@@ -72,7 +72,6 @@ def autoencoder(input_dataset_path, restart_training_flag):
     
     
     output_nd = output_layer.eval(feed_dict={x:mnist.train.images})
-    print output_nd
     for i in [0, 1, 2, 3, 4]:
         img_ori = np.reshape(mnist.train.images[i, :], (28, 28)) # 28 by 28 matrix 
         img_rcs = np.reshape(output_nd[i,:], (28, 28))
